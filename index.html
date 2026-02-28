@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InfraCraft — ParkHub Demos</title>
+<meta name="description" content="Live interactive demos of ParkHub — self-hosted parking management. Two editions: Rust (single binary) and PHP (shared hosting). Try free, reset anytime.">
+<meta name="author" content="Florian">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://nash87.github.io/infracraft-demos">
+<!-- Favicon -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🅿</text></svg>">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nash87.github.io/infracraft-demos">
+<meta property="og:title" content="InfraCraft — ParkHub Demos">
+<meta property="og:description" content="Live demos of ParkHub. Rust edition (single binary) and PHP edition (shared hosting). Try free, reset anytime.">
+<meta property="og:site_name" content="InfraCraft">
+<!-- Fonts: Bunny (EU-hosted, GDPR-compliant) -->
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700&family=fira-code:400,500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #090909;
+  --surface:   #111111;
+  --surface-2: #161616;
+  --surface-3: #1c1c1c;
+  --border:    #1f1f1f;
+  --border-2:  #2a2a2a;
+  --text:      #e8e8e8;
+  --text-2:    #a0a0a0;
+  --text-3:    #555555;
+  --green:     #22c55e;
+  --green-dim: rgba(34,197,94,.1);
+  --green-bd:  rgba(34,197,94,.2);
+  --purple:    #a78bfa;
+  --purple-dim: rgba(167,139,250,.1);
+  --purple-bd: rgba(167,139,250,.2);
+  --font:      'Inter', system-ui, sans-serif;
+  --mono:      'Fira Code', 'Fira Mono', monospace;
+  --r:         8px;
+  --r-lg:      12px;
+  --max-w:     1080px;
+  --t:         .15s ease;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* ── Status strip ── */
+.status-strip {
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  padding: 7px 0;
+  font-family: var(--mono); font-size: 11px;
+}
+.status-strip-inner {
+  max-width: var(--max-w); margin: 0 auto; padding: 0 24px;
+  display: flex; align-items: center; justify-content: center;
+  gap: 20px; flex-wrap: wrap; color: var(--text-3);
+}
+.sdot {
+  display: inline-flex; align-items: center; gap: 6px; color: var(--text-2);
+}
+.dot { width: 6px; height: 6px; border-radius: 50%; }
+.dot-green  { background: var(--green); }
+.dot-purple { background: var(--purple); }
+.sep { color: var(--border-2); }
+
+/* ── Nav ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  border-bottom: 1px solid var(--border);
+  background: rgba(9,9,9,.9);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.nav-inner {
+  max-width: var(--max-w); margin: 0 auto; padding: 0 24px;
+  height: 54px; display: flex; align-items: center; justify-content: space-between;
+}
+.nav-brand {
+  display: flex; align-items: center; gap: 0;
+  text-decoration: none; color: var(--text);
+  font-size: 14px; font-weight: 600; letter-spacing: -.01em;
+}
+.nav-brand-sep { color: var(--text-3); margin: 0 6px; font-weight: 300; }
+.nav-brand-sub { color: var(--text-3); font-weight: 400; }
+.nav-links { display: flex; align-items: center; gap: 20px; }
+.nav-a {
+  font-size: 13px; color: var(--text-2); text-decoration: none;
+  display: flex; align-items: center; gap: 6px;
+  transition: color var(--t);
+}
+.nav-a:hover { color: var(--text); }
+.nav-a svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* ── Hero ── */
+.hero {
+  padding: 148px 24px 80px;
+  max-width: var(--max-w); margin: 0 auto; text-align: center;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--mono); font-size: 11px; font-weight: 500;
+  color: var(--text-3); letter-spacing: .1em; text-transform: uppercase;
+  margin-bottom: 28px;
+}
+.hero-eyebrow::before, .hero-eyebrow::after {
+  content: ''; display: block; width: 32px; height: 1px; background: var(--border-2);
+}
+.hero h1 {
+  font-size: clamp(34px, 5.8vw, 60px);
+  font-weight: 700; letter-spacing: -.035em; line-height: 1.1;
+  color: #f2f2f2; margin-bottom: 18px;
+}
+.hero h1 .g { color: var(--green); }
+.hero h1 .p { color: var(--purple); }
+.hero-sub {
+  font-size: 17px; color: var(--text-2); max-width: 480px;
+  margin: 0 auto 40px; line-height: 1.65;
+}
+.hero-btns { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 10px 20px; border-radius: var(--r);
+  font-size: 14px; font-weight: 500; text-decoration: none;
+  transition: all var(--t); cursor: pointer; border: none;
+  line-height: 1;
+}
+.btn-green  { background: var(--green);  color: #000; }
+.btn-green:hover  { background: #16a34a; }
+.btn-purple { background: var(--purple); color: #000; }
+.btn-purple:hover { background: #8b5cf6; }
+.btn-ghost  { background: var(--surface-2); border: 1px solid var(--border-2); color: var(--text-2); }
+.btn-ghost:hover  { color: var(--text); background: var(--surface-3); }
+
+/* ── Layout ── */
+.wrap { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+section { padding: 0 0 88px; }
+.sec-label {
+  font-family: var(--mono); font-size: 11px; color: var(--text-3);
+  letter-spacing: .1em; text-transform: uppercase;
+  display: flex; align-items: center; gap: 12px; margin-bottom: 40px;
+}
+.sec-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ── Demo cards ── */
+.demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 680px) { .demo-grid { grid-template-columns: 1fr; } }
+
+.demo-card {
+  display: flex; flex-direction: column;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-lg); overflow: hidden;
+  transition: border-color var(--t);
+}
+.demo-card:hover { border-color: var(--border-2); }
+
+.card-head { padding: 24px; border-bottom: 1px solid var(--border); }
+.card-badge {
+  display: inline-flex; align-items: center;
+  font-family: var(--mono); font-size: 10px; font-weight: 500;
+  letter-spacing: .06em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 4px; margin-bottom: 14px;
+}
+.card-rust .card-badge { background: var(--green-dim); color: var(--green); border: 1px solid var(--green-bd); }
+.card-php  .card-badge { background: var(--purple-dim); color: var(--purple); border: 1px solid var(--purple-bd); }
+.card-title { font-size: 20px; font-weight: 700; letter-spacing: -.02em; color: var(--text); margin-bottom: 6px; }
+.card-desc  { font-size: 14px; color: var(--text-2); line-height: 1.55; }
+
+.card-body { padding: 22px 24px; flex: 1; display: flex; flex-direction: column; gap: 14px; }
+
+.creds {
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 14px 16px;
+}
+.creds-title {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--text-3); margin-bottom: 10px;
+}
+.creds-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+.creds-row + .creds-row { margin-top: 6px; }
+.creds-label { color: var(--text-2); }
+.creds-val {
+  font-family: var(--mono); font-size: 12px;
+  padding: 2px 9px; border-radius: 4px;
+  user-select: all; cursor: copy;
+}
+.card-rust .creds-val { background: var(--green-dim); color: var(--green); border: 1px solid var(--green-bd); }
+.card-php  .creds-val { background: var(--purple-dim); color: var(--purple); border: 1px solid var(--purple-bd); }
+
+.reset-note {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--text-3);
+}
+.rdot {
+  width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+  animation: rpulse 2s ease-in-out infinite;
+}
+.card-rust .rdot { background: var(--green); }
+.card-php  .rdot { background: var(--purple); }
+@keyframes rpulse { 0%,100% { opacity:1; } 50% { opacity:.25; } }
+
+.card-actions { display: flex; flex-direction: column; gap: 8px; margin-top: auto; }
+
+.btn-launch {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 11px 20px; border-radius: var(--r);
+  font-size: 14px; font-weight: 600; text-decoration: none;
+  transition: all var(--t);
+}
+.card-rust .btn-launch { background: var(--green); color: #000; }
+.card-rust .btn-launch:hover { background: #16a34a; }
+.card-php  .btn-launch { background: var(--purple); color: #000; }
+.card-php  .btn-launch:hover { background: #8b5cf6; }
+
+.btn-outline {
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  padding: 9px 20px; border-radius: var(--r);
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  background: var(--surface-2); border: 1px solid var(--border-2);
+  color: var(--text-2); transition: all var(--t);
+  text-decoration: none;
+}
+.btn-outline:hover { color: var(--text); background: var(--surface-3); }
+.btn-outline svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* ── When-to-use ── */
+.wtu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 640px) { .wtu-grid { grid-template-columns: 1fr; } }
+.wtu-card {
+  padding: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+}
+.wtu-card h4 {
+  font-size: 14px; font-weight: 600; margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.badge {
+  font-family: var(--mono); font-size: 10px; font-weight: 500;
+  padding: 2px 8px; border-radius: 4px; letter-spacing: .04em;
+}
+.badge-green  { background: var(--green-dim); color: var(--green); border: 1px solid var(--green-bd); }
+.badge-purple { background: var(--purple-dim); color: var(--purple); border: 1px solid var(--purple-bd); }
+.wtu-card ul { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+.wtu-card li {
+  font-size: 13px; color: var(--text-2);
+  display: flex; align-items: flex-start; gap: 9px; line-height: 1.4;
+}
+.tick {
+  flex-shrink: 0; width: 16px; height: 16px; border-radius: 3px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700; margin-top: 1px;
+}
+.tick-g { background: var(--green-dim);  color: var(--green);  border: 1px solid var(--green-bd);  }
+.tick-p { background: var(--purple-dim); color: var(--purple); border: 1px solid var(--purple-bd); }
+
+/* ── Table ── */
+.table-wrap {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-lg); overflow: hidden;
+}
+.table-head {
+  padding: 18px 24px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+}
+.table-head h3 { font-size: 15px; font-weight: 600; }
+.table-head span { font-family: var(--mono); font-size: 11px; color: var(--text-3); }
+table { width: 100%; border-collapse: collapse; }
+thead th {
+  padding: 10px 24px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--text-3); font-weight: 500;
+  text-align: left; background: var(--surface-2); border-bottom: 1px solid var(--border);
+}
+thead th:not(:first-child) { text-align: center; }
+tbody tr { border-bottom: 1px solid var(--border); }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover td { background: rgba(255,255,255,.013); }
+tbody td { padding: 11px 24px; font-size: 13px; color: var(--text-2); transition: background var(--t); }
+tbody td:not(:first-child) { text-align: center; }
+.y-r { color: var(--green);  font-size: 15px; }
+.y-p { color: var(--purple); font-size: 15px; }
+.no  { color: var(--text-3); font-size: 14px; }
+.pt  { font-family: var(--mono); font-size: 11px; color: var(--text-3); }
+
+/* ── Footer ── */
+footer { border-top: 1px solid var(--border); padding: 28px 24px; }
+.footer-inner {
+  max-width: var(--max-w); margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+}
+footer p   { font-size: 13px; color: var(--text-3); }
+footer a   { color: var(--text-2); text-decoration: none; transition: color var(--t); }
+footer a:hover { color: var(--text); }
+.footer-links { display: flex; gap: 18px; align-items: center; }
+
+/* ── Modal ── */
+.overlay {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,.72); backdrop-filter: blur(4px);
+  align-items: center; justify-content: center; padding: 24px;
+}
+.overlay.open { display: flex; }
+.modal {
+  background: var(--surface); border: 1px solid var(--border-2);
+  border-radius: var(--r-lg); padding: 28px; width: 100%; max-width: 420px;
+}
+.modal h3 { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
+.modal p  { font-size: 14px; color: var(--text-2); margin-bottom: 22px; line-height: 1.6; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+.m-cancel {
+  padding: 8px 16px; border-radius: var(--r);
+  background: var(--surface-2); border: 1px solid var(--border-2);
+  color: var(--text-2); font-size: 13px; cursor: pointer; transition: all var(--t);
+}
+.m-cancel:hover { color: var(--text); }
+.m-confirm {
+  padding: 8px 18px; border-radius: var(--r);
+  font-size: 14px; font-weight: 600; cursor: pointer; border: none;
+  transition: all var(--t);
+}
+
+/* ── Responsive ── */
+@media (max-width: 520px) {
+  .nav-brand-sep, .nav-brand-sub { display: none; }
+  .hero { padding: 128px 16px 64px; }
+  .wrap { padding: 0 16px; }
+  .status-strip-inner { gap: 12px; font-size: 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Status strip (below fixed nav, rendered first in DOM) -->
+<div style="height:54px"></div><!-- nav spacer -->
+<div class="status-strip">
+  <div class="status-strip-inner">
+    <span class="sdot"><span class="dot dot-green"></span>Rust demo live</span>
+    <span class="sep">·</span>
+    <span class="sdot"><span class="dot dot-purple"></span>PHP demo live</span>
+    <span class="sep">·</span>
+    <span>Resets every 30 min · data always fresh</span>
+    <span class="sep">·</span>
+    <span>v1.1.1</span>
+  </div>
+</div>
+
+<nav>
+  <div class="nav-inner">
+    <a href="https://infracraft.duckdns.org" class="nav-brand">
+      InfraCraft<span class="nav-brand-sep">/</span><span class="nav-brand-sub">demos</span>
+    </a>
+    <div class="nav-links">
+      <a href="https://infracraft.duckdns.org" class="nav-a">Portfolio</a>
+      <a href="https://github.com/nash87" target="_blank" rel="noopener" class="nav-a">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        nash87
+      </a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-eyebrow">Open Source · Self-Hosted</div>
+  <h1>ParkHub<br><span class="g">Rust</span> &amp; <span class="p">PHP</span> Editions</h1>
+  <p class="hero-sub">
+    Self-hosted parking management — two stacks, one API. Try both live demos,
+    reset whenever you want, deploy where you like.
+  </p>
+  <div class="hero-btns">
+    <a href="#rust" class="btn btn-green">Try Rust Edition</a>
+    <a href="#php"  class="btn btn-purple">Try PHP Edition</a>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+
+  <!-- ── Demo cards ── -->
+  <section>
+    <div class="sec-label">Live Demos</div>
+    <div class="demo-grid">
+
+      <!-- Rust -->
+      <div class="demo-card card-rust" id="rust">
+        <div class="card-head">
+          <div class="card-badge">Rust · Docker · Binary</div>
+          <div class="card-title">parkhub-docker</div>
+          <div class="card-desc">
+            ~30 MB single binary, embedded redb database, React 19 frontend.
+            One command — no MySQL, no Redis, zero runtime dependencies.
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="creds">
+            <div class="creds-title">Demo credentials</div>
+            <div class="creds-row">
+              <span class="creds-label">Email</span>
+              <span class="creds-val">admin@parkhub.local</span>
+            </div>
+            <div class="creds-row">
+              <span class="creds-label">Password</span>
+              <span class="creds-val">admin</span>
+            </div>
+          </div>
+          <div class="reset-note">
+            <span class="rdot"></span>
+            Resets every 30 min automatically — or reset now
+          </div>
+          <div class="card-actions">
+            <a href="RUST_DEMO_URL" target="_blank" rel="noopener" class="btn-launch">
+              <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              Launch Rust Demo
+            </a>
+            <button onclick="openReset('rust')" class="btn-outline">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12a9 9 0 019-9 9.75 9.75 0 016.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 01-9 9 9.75 9.75 0 01-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+              Reset Demo Now
+            </button>
+            <a href="https://github.com/nash87/parkhub-rust" target="_blank" rel="noopener" class="btn-outline">
+              <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+              nash87/parkhub-rust
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- PHP -->
+      <div class="demo-card card-php" id="php">
+        <div class="card-head">
+          <div class="card-badge">PHP · Laravel 12 · Shared Hosting</div>
+          <div class="card-title">parkhub-php</div>
+          <div class="card-desc">
+            Same features, Laravel 12 + MySQL/SQLite backend. Runs on cPanel,
+            Plesk, free PaaS tiers — no Docker required.
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="creds">
+            <div class="creds-title">Demo credentials</div>
+            <div class="creds-row">
+              <span class="creds-label">Email</span>
+              <span class="creds-val">admin@parkhub.local</span>
+            </div>
+            <div class="creds-row">
+              <span class="creds-label">Password</span>
+              <span class="creds-val">admin</span>
+            </div>
+          </div>
+          <div class="reset-note">
+            <span class="rdot"></span>
+            Resets every 30 min automatically — or reset now
+          </div>
+          <div class="card-actions">
+            <a href="PHP_DEMO_URL" target="_blank" rel="noopener" class="btn-launch">
+              <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              Launch PHP Demo
+            </a>
+            <button onclick="openReset('php')" class="btn-outline">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12a9 9 0 019-9 9.75 9.75 0 016.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 01-9 9 9.75 9.75 0 01-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+              Reset Demo Now
+            </button>
+            <a href="https://github.com/nash87/parkhub-php" target="_blank" rel="noopener" class="btn-outline">
+              <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+              nash87/parkhub-php
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Which edition ── -->
+  <section>
+    <div class="sec-label">Which Edition</div>
+    <div class="wtu-grid">
+      <div class="wtu-card">
+        <h4>Use <span class="badge badge-green">parkhub-docker</span> when…</h4>
+        <ul>
+          <li><span class="tick tick-g">✓</span>You have a VPS, home server, or Kubernetes cluster</li>
+          <li><span class="tick tick-g">✓</span>You want one Docker command to get running</li>
+          <li><span class="tick tick-g">✓</span>You need maximum performance — thousands of users</li>
+          <li><span class="tick tick-g">✓</span>You want zero runtime dependencies and no DB server</li>
+          <li><span class="tick tick-g">✓</span>You deploy on Kubernetes, Nomad, or bare metal</li>
+        </ul>
+      </div>
+      <div class="wtu-card">
+        <h4>Use <span class="badge badge-purple">parkhub-php</span> when…</h4>
+        <ul>
+          <li><span class="tick tick-p">✓</span>You're on shared hosting — cPanel, Plesk, IONOS</li>
+          <li><span class="tick tick-p">✓</span>You want free-tier PaaS hosting (Render, Railway)</li>
+          <li><span class="tick tick-p">✓</span>You can't install Docker on your server</li>
+          <li><span class="tick tick-p">✓</span>You already run PHP + MySQL infrastructure</li>
+          <li><span class="tick tick-p">✓</span>You need browser-only setup — no CLI required</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Features ── -->
+  <section>
+    <div class="sec-label">Features — v1.1.1</div>
+    <div class="table-wrap">
+      <div class="table-head">
+        <h3>Full feature comparison</h3>
+        <span>API-compatible — migrate between editions anytime</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:52%">Feature</th>
+            <th style="width:24%">Docker / Rust</th>
+            <th style="width:24%">PHP</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Parking lot &amp; slot management</td>              <td class="y-r">✓</td><td class="y-p">✓</td></tr>
+          <tr><td>Smart booking — quick-assign best slot</td>          <td class="y-r">✓</td><td class="y-p">✓</td></tr>
+          <tr><td>Recurring &amp; guest bookings</td>                  <td class="y-r">✓</td><td class="y-p">✓</td></tr>
+          <tr><td>QR code check-in</td>                                <td class="y-r">✓</td><td class="y-p">✓</td></tr>
+          <tr><td>Absence tracking — homeoffice, vacation, sick</td>   <td class="y-r">✓</td><td class="y-p">✓</td></tr>
+          <tr><td>iCal import + export</td>                            <td class="y-r">✓</td><td class="y-p">✓</td></tr>
+          <tr><td>Team overview + today status</td>                    <td class="y-r">✓</td><td class="y-p">✓</td></tr>
+          <tr><td>Waitlist system</td>                                  <td class="y-r">✓</td><td class="y-p">✓</td></tr>
+          <tr><td>Booking swap requests</td>                           <td class="y-r">✓</td><td class="y-p">✓</td></tr>
+          <tr><td>Vehicle management + photo upload</td>               <td class="y-r">✓</td><td class="y-p">✓</td></tr>
+          <tr><td>Push notifications + webhooks</td>                   <td class="y-r">✓</td><td class="y-p">✓</td></tr>
+          <tr><td>Admin dashboard + reports + CSV export</td>          <td class="y-r">✓</td><td class="y-p">✓</td></tr>
+          <tr><td>Branding — logo, colors, company name</td>           <td class="y-r">✓</td><td class="y-p">✓</td></tr>
+          <tr><td>GDPR — data export + erasure (Art. 15 / 17)</td>    <td class="y-r">✓</td><td class="y-p">✓</td></tr>
+          <tr><td>10 color themes — Dracula, Nord, Gruvbox…</td>       <td class="y-r">✓</td><td class="y-p">✓</td></tr>
+          <tr><td>Multi-language (DE, EN, FR, AR, JA, ZH…)</td>        <td class="y-r">✓</td><td class="y-p">✓</td></tr>
+          <tr><td>Security — HSTS, CSP, Argon2id, rate limiting</td>  <td class="y-r">✓</td><td class="y-p">✓</td></tr>
+          <tr><td>Embedded database — no external DB</td>              <td class="y-r">✓</td><td class="no">–</td></tr>
+          <tr><td>Shared hosting — cPanel / FTP deploy</td>            <td class="no">–</td><td class="y-p">✓</td></tr>
+          <tr><td>Free-tier PaaS (Render, Railway, Fly.io)</td>        <td class="pt">VPS needed</td><td class="y-p">✓</td></tr>
+          <tr><td>SQLite — zero-config small deployments</td>          <td class="pt">redb</td><td class="y-p">✓</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <p>
+      <a href="https://infracraft.duckdns.org">infracraft</a>
+      <span style="color:var(--border-2);margin:0 8px">/</span>
+      demos · MIT License
+    </p>
+    <div class="footer-links">
+      <a href="https://github.com/nash87/parkhub-rust"     target="_blank" rel="noopener">parkhub-rust</a>
+      <a href="https://github.com/nash87/parkhub-php"      target="_blank" rel="noopener">parkhub-php</a>
+      <a href="https://github.com/nash87/infracraft-demos" target="_blank" rel="noopener">source</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ── Reset Modal ── -->
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeReset()">
+  <div class="modal">
+    <h3 id="m-title">Reset Demo?</h3>
+    <p  id="m-desc">
+      This will wipe all demo data and restart the instance with fresh seed data.
+      Takes about 30–60 seconds. Active sessions will be logged out.
+    </p>
+    <div class="modal-actions">
+      <button class="m-cancel" onclick="closeReset()">Cancel</button>
+      <button class="m-confirm" id="m-btn" onclick="doReset()">Reset Now</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// Demo Reset — Render.com Deploy Hook URLs
+// These trigger a container restart: DB is wiped, seeder runs on startup.
+// Replace placeholder values with your Render Deploy Hook URLs after setup.
+// Rate limiting: Render blocks duplicate triggers within 30s on their side;
+// additionally, a 5-min client-side cooldown is stored in localStorage.
+// ─────────────────────────────────────────────────────────────────────────────
+const HOOKS = {
+  rust: '',   // TODO: paste Render deploy hook URL for Rust demo service
+  php:  '',   // TODO: paste Render deploy hook URL for PHP demo service
+};
+
+const COOLDOWN = 5 * 60 * 1000; // 5 minutes between resets per edition
+let ed = null;
+
+function openReset(edition) {
+  ed = edition;
+  const last    = parseInt(localStorage.getItem('r-' + edition) || '0');
+  const elapsed = Date.now() - last;
+  const wait    = Math.ceil((COOLDOWN - elapsed) / 60000);
+  const title   = document.getElementById('m-title');
+  const desc    = document.getElementById('m-desc');
+  const btn     = document.getElementById('m-btn');
+  const label   = edition === 'rust' ? 'Rust' : 'PHP';
+  const color   = edition === 'rust' ? 'var(--green)' : 'var(--purple)';
+
+  if (elapsed < COOLDOWN) {
+    title.textContent = 'Cooldown active';
+    desc.textContent  = `The ${label} demo was just reset. Wait ${wait} more minute${wait !== 1 ? 's' : ''}.`;
+    btn.textContent   = 'OK';
+    btn.style.cssText = `background:var(--surface-2);border:1px solid var(--border-2);color:var(--text-2)`;
+    btn.onclick       = closeReset;
+  } else {
+    title.textContent = `Reset ${label} Demo?`;
+    desc.innerHTML    = `Wipes all <strong>${label} edition</strong> demo data and restarts with fresh seed data.<br><br>~30–60 seconds downtime. Active sessions will be logged out.`;
+    btn.textContent   = 'Reset Now';
+    btn.style.cssText = `background:${color};color:#000`;
+    btn.onclick       = doReset;
+  }
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closeReset() {
+  document.getElementById('overlay').classList.remove('open');
+  ed = null;
+}
+
+async function doReset() {
+  const btn = document.getElementById('m-btn');
+  btn.textContent = 'Resetting…';
+  btn.disabled = true;
+
+  try {
+    const hook = HOOKS[ed];
+    if (hook) await fetch(hook, { method: 'POST', mode: 'no-cors' });
+    localStorage.setItem('r-' + ed, Date.now().toString());
+    document.getElementById('m-desc').innerHTML =
+      '✓ Reset triggered. The demo is restarting — ready in ~30–60 seconds.<br>Refresh the demo tab once it's back up.';
+    btn.textContent   = 'Close';
+    btn.style.cssText = 'background:var(--surface-2);border:1px solid var(--border-2);color:var(--text-2)';
+    btn.disabled      = false;
+    btn.onclick       = closeReset;
+  } catch {
+    document.getElementById('m-desc').textContent = 'Could not reach the reset endpoint. Please try again.';
+    btn.textContent = 'Retry';
+    btn.disabled    = false;
+    btn.onclick     = doReset;
+  }
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeReset(); });
+</script>
+
+</body>
+</html>
