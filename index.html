@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>InfraCraft — ParkHub Demos</title>
-<meta name="description" content="Live interactive demos of ParkHub — self-hosted parking management. Two editions: Rust (single binary) and PHP (shared hosting). Try free, reset anytime.">
+<meta name="description" content="Live interactive demos of ParkHub v1.2.0 — self-hosted parking management. Two editions: Rust (Axum) and PHP (Laravel 12). Credits system, i18n, dark mode. Try free, reset anytime.">
 <meta name="author" content="Florian">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://nash87.github.io/infracraft-demos">
@@ -14,7 +14,7 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://nash87.github.io/infracraft-demos">
 <meta property="og:title" content="InfraCraft — ParkHub Demos">
-<meta property="og:description" content="Live demos of ParkHub. Rust edition (single binary) and PHP edition (shared hosting). Try free, reset anytime.">
+<meta property="og:description" content="Live demos of ParkHub v1.2.0. Rust edition (Axum) and PHP edition (Laravel 12). Credits system, i18n, dark mode. Try free, reset anytime.">
 <meta property="og:site_name" content="InfraCraft">
 <!-- Fonts: Bunny (EU-hosted, GDPR-compliant) -->
 <link rel="preconnect" href="https://fonts.bunny.net">
@@ -352,7 +352,7 @@ footer a:hover { color: var(--text); }
     <span class="sep">·</span>
     <span>Resets every 30 min · data always fresh</span>
     <span class="sep">·</span>
-    <span>v1.1.1</span>
+    <span>v1.2.0</span>
   </div>
 </div>
 
@@ -398,7 +398,7 @@ footer a:hover { color: var(--text); }
           <div class="card-badge">Rust · Docker · Binary</div>
           <div class="card-title">parkhub-docker</div>
           <div class="card-desc">
-            ~30 MB single binary, embedded redb database, React 19 frontend.
+            ~30 MB single binary, embedded redb database. Astro 6 + React 19 + Tailwind CSS 4 frontend.
             One command — no MySQL, no Redis, zero runtime dependencies.
           </div>
         </div>
@@ -419,7 +419,7 @@ footer a:hover { color: var(--text); }
             Resets every 30 min automatically — or reset now
           </div>
           <div class="card-actions">
-            <a href="RUST_DEMO_URL" target="_blank" rel="noopener" class="btn-launch">
+            <a href="https://parkhub-rust.onrender.com" target="_blank" rel="noopener" class="btn-launch">
               <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
               Launch Rust Demo
             </a>
@@ -441,7 +441,7 @@ footer a:hover { color: var(--text); }
           <div class="card-badge">PHP · Laravel 12 · Shared Hosting</div>
           <div class="card-title">parkhub-php</div>
           <div class="card-desc">
-            Same features, Laravel 12 + MySQL/SQLite backend. Runs on cPanel,
+            Same features, Laravel 12 + MySQL/SQLite backend. Astro 6 + React 19 + Tailwind CSS 4 frontend. Runs on cPanel,
             Plesk, free PaaS tiers — no Docker required.
           </div>
         </div>
@@ -462,7 +462,7 @@ footer a:hover { color: var(--text); }
             Resets every 30 min automatically — or reset now
           </div>
           <div class="card-actions">
-            <a href="PHP_DEMO_URL" target="_blank" rel="noopener" class="btn-launch">
+            <a href="https://parkhub-php.onrender.com" target="_blank" rel="noopener" class="btn-launch">
               <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
               Launch PHP Demo
             </a>
@@ -510,7 +510,7 @@ footer a:hover { color: var(--text); }
 
   <!-- ── Features ── -->
   <section>
-    <div class="sec-label">Features — v1.1.1</div>
+    <div class="sec-label">Features — v1.2.0</div>
     <div class="table-wrap">
       <div class="table-head">
         <h3>Full feature comparison</h3>
@@ -526,6 +526,7 @@ footer a:hover { color: var(--text); }
         </thead>
         <tbody>
           <tr><td>Parking lot &amp; slot management</td>              <td class="y-r">✓</td><td class="y-p">✓</td></tr>
+          <tr><td>Credits system — booking &amp; resource allocation</td><td class="y-r">✓</td><td class="y-p">✓</td></tr>
           <tr><td>Smart booking — quick-assign best slot</td>          <td class="y-r">✓</td><td class="y-p">✓</td></tr>
           <tr><td>Recurring &amp; guest bookings</td>                  <td class="y-r">✓</td><td class="y-p">✓</td></tr>
           <tr><td>QR code check-in</td>                                <td class="y-r">✓</td><td class="y-p">✓</td></tr>
@@ -539,8 +540,8 @@ footer a:hover { color: var(--text); }
           <tr><td>Admin dashboard + reports + CSV export</td>          <td class="y-r">✓</td><td class="y-p">✓</td></tr>
           <tr><td>Branding — logo, colors, company name</td>           <td class="y-r">✓</td><td class="y-p">✓</td></tr>
           <tr><td>GDPR — data export + erasure (Art. 15 / 17)</td>    <td class="y-r">✓</td><td class="y-p">✓</td></tr>
-          <tr><td>10 color themes — Dracula, Nord, Gruvbox…</td>       <td class="y-r">✓</td><td class="y-p">✓</td></tr>
-          <tr><td>Multi-language (DE, EN, FR, AR, JA, ZH…)</td>        <td class="y-r">✓</td><td class="y-p">✓</td></tr>
+          <tr><td>Dark mode + 10 color themes</td>                     <td class="y-r">✓</td><td class="y-p">✓</td></tr>
+          <tr><td>Internationalization — 10 languages</td>             <td class="y-r">✓</td><td class="y-p">✓</td></tr>
           <tr><td>Security — HSTS, CSP, Argon2id, rate limiting</td>  <td class="y-r">✓</td><td class="y-p">✓</td></tr>
           <tr><td>Embedded database — no external DB</td>              <td class="y-r">✓</td><td class="no">–</td></tr>
           <tr><td>Shared hosting — cPanel / FTP deploy</td>            <td class="no">–</td><td class="y-p">✓</td></tr>
