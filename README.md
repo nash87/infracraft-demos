@@ -14,18 +14,18 @@ Live interactive demos of [ParkHub](https://github.com/nash87/parkhub-rust) -- a
 | **Rust** | Rust + Axum, embedded redb database | Astro 6 + React 19 + Tailwind CSS 4 | [nash87/parkhub-rust](https://github.com/nash87/parkhub-rust) |
 | **PHP** | Laravel 12 + MySQL/SQLite | Astro 6 + React 19 + Tailwind CSS 4 | [nash87/parkhub-php](https://github.com/nash87/parkhub-php) |
 
-Both editions share the same Astro 6 + React 19 + Tailwind CSS 4 frontend and run at **v1.2.0** with production-level security hardening.
+Both editions share the same Astro 6 + React 19 + Tailwind CSS 4 frontend and run at **v1.2.1** with production-level security hardening.
 
 ### Live Demos
 
-- **PHP Edition:** [parkhub-php.onrender.com](https://parkhub-php.onrender.com)
-- **Rust Edition:** [parkhub-rust.onrender.com](https://parkhub-rust.onrender.com)
+- **PHP Edition:** [parkhub-php-demo.onrender.com](https://parkhub-php-demo.onrender.com)
+- **Rust Edition:** [parkhub-rust-demo.onrender.com](https://parkhub-rust-demo.onrender.com)
 
 ### Demo Credentials
 
 ```
-Email:    admin@parkhub.local
-Password: admin
+Email:    admin@parkhub.test
+Password: ParkHub2026!
 ```
 
 Demo data is pre-seeded with 10 parking lots, 200 users, and ~3,500 bookings.
@@ -33,7 +33,7 @@ Data resets every 30 minutes automatically -- or use the "Reset Demo Now" button
 
 ---
 
-## Features (v1.2.0)
+## Features (v1.2.1)
 
 - Parking lot management (lots, floors, slots)
 - Credits system for booking and resource allocation

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>InfraCraft — ParkHub Demos</title>
-<meta name="description" content="Live interactive demos of ParkHub v1.2.0 — self-hosted parking management. Two editions: Rust (Axum) and PHP (Laravel 12). Credits system, i18n, dark mode. Try free, reset anytime.">
+<meta name="description" content="Live interactive demos of ParkHub v1.2.1 — self-hosted parking management. Two editions: Rust (Axum) and PHP (Laravel 12). Credits system, i18n, dark mode. Try free, reset anytime.">
 <meta name="author" content="Florian">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://nash87.github.io/infracraft-demos">
@@ -14,7 +14,7 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://nash87.github.io/infracraft-demos">
 <meta property="og:title" content="InfraCraft — ParkHub Demos">
-<meta property="og:description" content="Live demos of ParkHub v1.2.0. Rust edition (Axum) and PHP edition (Laravel 12). Credits system, i18n, dark mode. Try free, reset anytime.">
+<meta property="og:description" content="Live demos of ParkHub v1.2.1. Rust edition (Axum) and PHP edition (Laravel 12). Credits system, i18n, dark mode. Try free, reset anytime.">
 <meta property="og:site_name" content="InfraCraft">
 <!-- Fonts: Bunny (EU-hosted, GDPR-compliant) -->
 <link rel="preconnect" href="https://fonts.bunny.net">
@@ -352,7 +352,7 @@ footer a:hover { color: var(--text); }
     <span class="sep">·</span>
     <span>Resets every 30 min · data always fresh</span>
     <span class="sep">·</span>
-    <span>v1.2.0</span>
+    <span>v1.2.1</span>
   </div>
 </div>
 
@@ -407,11 +407,11 @@ footer a:hover { color: var(--text); }
             <div class="creds-title">Demo credentials</div>
             <div class="creds-row">
               <span class="creds-label">Email</span>
-              <span class="creds-val">admin@parkhub.local</span>
+              <span class="creds-val">admin@parkhub.test</span>
             </div>
             <div class="creds-row">
               <span class="creds-label">Password</span>
-              <span class="creds-val">admin</span>
+              <span class="creds-val">ParkHub2026!</span>
             </div>
           </div>
           <div class="reset-note">
@@ -450,11 +450,11 @@ footer a:hover { color: var(--text); }
             <div class="creds-title">Demo credentials</div>
             <div class="creds-row">
               <span class="creds-label">Email</span>
-              <span class="creds-val">admin@parkhub.local</span>
+              <span class="creds-val">admin@parkhub.test</span>
             </div>
             <div class="creds-row">
               <span class="creds-label">Password</span>
-              <span class="creds-val">admin</span>
+              <span class="creds-val">ParkHub2026!</span>
             </div>
           </div>
           <div class="reset-note">
@@ -510,7 +510,7 @@ footer a:hover { color: var(--text); }
 
   <!-- ── Features ── -->
   <section>
-    <div class="sec-label">Features — v1.2.0</div>
+    <div class="sec-label">Features — v1.2.1</div>
     <div class="table-wrap">
       <div class="table-head">
         <h3>Full feature comparison</h3>
@@ -596,9 +596,12 @@ footer a:hover { color: var(--text); }
 // Rate limiting: Render blocks duplicate triggers within 30s on their side;
 // additionally, a 5-min client-side cooldown is stored in localStorage.
 // ─────────────────────────────────────────────────────────────────────────────
+// Deploy hooks — generated from Render Dashboard > Service > Settings > Deploy Hook
+// These are secret URLs that trigger a container restart (DB wipes, seeder re-runs).
+// To set up: Dashboard > parkhub-*-demo > Settings > copy Deploy Hook URL
 const HOOKS = {
-  rust: '',   // TODO: paste Render deploy hook URL for Rust demo service
-  php:  '',   // TODO: paste Render deploy hook URL for PHP demo service
+  rust: '',  // Paste Render deploy hook URL from dashboard
+  php:  '',  // Paste Render deploy hook URL from dashboard
 };
 
 const COOLDOWN = 5 * 60 * 1000; // 5 minutes between resets per edition
