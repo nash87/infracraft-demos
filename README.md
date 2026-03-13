@@ -1,6 +1,6 @@
-# InfraCraft — ParkHub Demos
+# InfraCraft -- ParkHub Demos
 
-Live interactive demos of [ParkHub](https://github.com/nash87/parkhub-rust) — a self-hosted parking management system available in two editions.
+Live interactive demos of [ParkHub](https://github.com/nash87/parkhub-rust) -- a self-hosted parking management system available in two editions.
 
 **Demo site:** [nash87.github.io/infracraft-demos](https://nash87.github.io/infracraft-demos)
 **Portfolio:** [infracraft.duckdns.org](https://infracraft.duckdns.org)
@@ -9,12 +9,17 @@ Live interactive demos of [ParkHub](https://github.com/nash87/parkhub-rust) — 
 
 ## Demos
 
-| Edition | Language | Stack | Source |
-|---------|----------|-------|--------|
-| **Rust** | Rust + Axum + React 19 | Single binary, redb embedded DB | [nash87/parkhub-rust](https://github.com/nash87/parkhub-rust) |
-| **PHP** | Laravel 12 + MySQL/SQLite + React 19 | Traditional LAMP-style | [nash87/parkhub-php](https://github.com/nash87/parkhub-php) |
+| Edition | Backend | Frontend | Source |
+|---------|---------|----------|--------|
+| **Rust** | Rust + Axum, embedded redb database | Astro 6 + React 19 + Tailwind CSS 4 | [nash87/parkhub-rust](https://github.com/nash87/parkhub-rust) |
+| **PHP** | Laravel 12 + MySQL/SQLite | Astro 6 + React 19 + Tailwind CSS 4 | [nash87/parkhub-php](https://github.com/nash87/parkhub-php) |
 
-Both demos run at **v1.1.1** with production-level security hardening.
+Both editions share the same Astro 6 + React 19 + Tailwind CSS 4 frontend and run at **v1.2.0** with production-level security hardening.
+
+### Live Demos
+
+- **PHP Edition:** [parkhub-php.onrender.com](https://parkhub-php.onrender.com)
+- **Rust Edition:** [parkhub-rust.onrender.com](https://parkhub-rust.onrender.com)
 
 ### Demo Credentials
 
@@ -24,14 +29,17 @@ Password: admin
 ```
 
 Demo data is pre-seeded with 10 parking lots, 200 users, and ~3,500 bookings.
-Data resets every 30 minutes automatically — or use the "Reset Demo Now" button.
+Data resets every 30 minutes automatically -- or use the "Reset Demo Now" button.
 
 ---
 
-## Features (v1.1.1)
+## Features (v1.2.0)
 
 - Parking lot management (lots, floors, slots)
+- Credits system for booking and resource allocation
 - Booking system with conflict detection
+- Internationalization (i18n) -- 10 languages supported
+- Dark mode with multiple color themes
 - User management + role-based access control
 - Admin dashboard with analytics
 - Vehicle management
@@ -42,7 +50,7 @@ Data resets every 30 minutes automatically — or use the "Reset Demo Now" butto
 ## Architecture
 
 ### Demo Hosting
-- **Landing page**: GitHub Pages (this repo, static HTML — zero build step)
+- **Landing page**: GitHub Pages (this repo, static HTML -- zero build step)
 - **Demo instances**: [Render.com](https://render.com) free-tier Docker containers
 
 ### Reset Mechanism
@@ -65,7 +73,7 @@ infracraft-demos/
 ├── index.html              # Single-file landing page (vanilla HTML/CSS/JS)
 └── .github/
     └── workflows/
-        └── pages.yml       # GitHub Actions — auto-deploy to Pages on push
+        └── pages.yml       # GitHub Actions -- auto-deploy to Pages on push
 ```
 
 ---
@@ -74,13 +82,13 @@ infracraft-demos/
 
 ### PHP Edition (Render.com)
 1. Fork [nash87/parkhub-php](https://github.com/nash87/parkhub-php)
-2. Create a new Web Service on Render → connect your fork
+2. Create a new Web Service on Render -> connect your fork
 3. Render detects `render.yaml` automatically
 4. Set `DEMO_MODE=true` to enable auto-seeding
 
 ### Rust Edition (Render.com)
 1. Fork [nash87/parkhub-rust](https://github.com/nash87/parkhub-rust)
-2. Create a new Web Service on Render → connect your fork
+2. Create a new Web Service on Render -> connect your fork
 3. Render detects `render.yaml` automatically
 
 ### Self-hosted (Kubernetes)
@@ -91,6 +99,6 @@ See the respective repos for deployment details.
 
 ## License
 
-MIT — see [LICENSE](https://github.com/nash87/parkhub-rust/blob/main/LICENSE) in the source repos.
+MIT -- see [LICENSE](https://github.com/nash87/parkhub-rust/blob/main/LICENSE) in the source repos.
 
-Built by [Florian](https://infracraft.duckdns.org) · Part of the InfraCraft homelab stack.
+Built by [Florian](https://infracraft.duckdns.org) -- Part of the InfraCraft homelab stack.
