@@ -1,9 +1,8 @@
-# InfraCraft -- ParkHub Demos
+# ParkHub — Live Demos
 
-Live interactive demos of [ParkHub](https://github.com/nash87/parkhub-rust) -- a self-hosted parking management system available in two editions.
+Live interactive demos of [ParkHub](https://github.com/nash87/parkhub-rust) — a self-hosted parking management system available in two editions.
 
 **Demo site:** [nash87.github.io/infracraft-demos](https://nash87.github.io/infracraft-demos)
-**Portfolio:** [infracraft.duckdns.org](https://infracraft.duckdns.org)
 
 ---
 
@@ -14,12 +13,12 @@ Live interactive demos of [ParkHub](https://github.com/nash87/parkhub-rust) -- a
 | **Rust** | Rust + Axum, embedded redb database | Astro 6 + React 19 + Tailwind CSS 4 | [nash87/parkhub-rust](https://github.com/nash87/parkhub-rust) |
 | **PHP** | Laravel 12 + MySQL/SQLite | Astro 6 + React 19 + Tailwind CSS 4 | [nash87/parkhub-php](https://github.com/nash87/parkhub-php) |
 
-Both editions share the same Astro 6 + React 19 + Tailwind CSS 4 frontend and run at **v1.2.1** with production-level security hardening.
+Both editions share the same frontend and feature set.
 
 ### Live Demos
 
-- **PHP Edition:** [parkhub-php-demo.onrender.com](https://parkhub-php-demo.onrender.com)
 - **Rust Edition:** [parkhub-rust-demo.onrender.com](https://parkhub-rust-demo.onrender.com)
+- **PHP Edition:** [parkhub-php-demo.onrender.com](https://parkhub-php-demo.onrender.com)
 
 ### Demo Credentials
 
@@ -28,41 +27,40 @@ Email:    admin@parkhub.test
 Password: ParkHub2026!
 ```
 
-Demo data is pre-seeded with 10 parking lots, 200 users, and ~3,500 bookings.
-Data resets every 30 minutes automatically -- or use the "Reset Demo Now" button.
+Demo data is pre-seeded. Data resets via in-app overlay — vote with other visitors or reset when you're the only one online.
 
 ---
 
-## Features (v1.2.1)
+## Features
 
 - Parking lot management (lots, floors, slots)
 - Credits system for booking and resource allocation
-- Booking system with conflict detection
-- Internationalization (i18n) -- 10 languages supported
-- Dark mode with multiple color themes
-- User management + role-based access control
-- Admin dashboard with analytics
-- Vehicle management
-- Security: HSTS, CSP, rate limiting, JWT, GDPR Art.17 erasure
+- Booking system with conflict detection and auto-assignment
+- Recurring and guest bookings
+- QR code check-in
+- Absence tracking (homeoffice, vacation, sick)
+- iCal import and export
+- Team overview and today status
+- Waitlist system and booking swaps
+- Vehicle management with photo upload
+- Push notifications and webhooks
+- Admin dashboard with reports and CSV export
+- Internationalization (i18n) — 10 languages
+- Dark mode with 10 color themes
+- Branding customization (logo, colors, company name)
+- Security: HSTS, CSP, Argon2id, rate limiting, JWT
+- GDPR: data export and erasure (Art. 15/17)
 
 ---
 
 ## Architecture
 
-### Demo Hosting
-- **Landing page**: [GitHub Pages](https://nash87.github.io/infracraft-demos) (this repo, static HTML -- zero build step)
-- **Demo instances**: [Render.com](https://render.com) free-tier Docker containers
+- **Landing page**: [GitHub Pages](https://nash87.github.io/infracraft-demos) (static HTML)
+- **Demo instances**: [Render.com](https://render.com) Docker containers
 
 ### Reset Mechanism
-Clicking "Reset Demo Now" calls a [Render Deploy Hook](https://render.com/docs/deploy-hooks), which redeploys the container. Since Render free-tier has no persistent volumes, the database resets to a clean seeded state on every deploy.
 
-Client-side 5-minute cooldown prevents abuse (stored in `localStorage`).
-
-### PHP Demo Seeding
-The PHP container runs `ProductionSimulationSeeder` on startup when `DEMO_MODE=true`:
-```bash
-php artisan db:seed --class=ProductionSimulationSeeder --force
-```
+The in-app overlay lets visitors vote on resetting demo data. If you're the only visitor online, you can reset immediately.
 
 ---
 
@@ -71,34 +69,16 @@ php artisan db:seed --class=ProductionSimulationSeeder --force
 ```
 infracraft-demos/
 ├── index.html              # Single-file landing page (vanilla HTML/CSS/JS)
-└── .github/
-    └── workflows/
-        └── pages.yml       # GitHub Actions -- auto-deploy to Pages on push
+├── .github/
+│   └── workflows/
+│       └── pages.yml       # GitHub Actions — auto-deploy to Pages on push
+└── README.md
 ```
-
----
-
-## Deploying Your Own
-
-### PHP Edition (Render.com)
-1. Fork [nash87/parkhub-php](https://github.com/nash87/parkhub-php)
-2. Create a new Web Service on Render -> connect your fork
-3. Render detects `render.yaml` automatically
-4. Set `DEMO_MODE=true` to enable auto-seeding
-
-### Rust Edition (Render.com)
-1. Fork [nash87/parkhub-rust](https://github.com/nash87/parkhub-rust)
-2. Create a new Web Service on Render -> connect your fork
-3. Render detects `render.yaml` automatically
-
-### Self-hosted (Kubernetes)
-Both editions ship with full Kubernetes manifests and Flux GitOps integration.
-See the respective repos for deployment details.
 
 ---
 
 ## License
 
-MIT -- see [LICENSE](https://github.com/nash87/parkhub-rust/blob/main/LICENSE) in the source repos.
+MIT — see [LICENSE](https://github.com/nash87/parkhub-rust/blob/main/LICENSE) in the source repos.
 
-Built by [Florian](https://infracraft.duckdns.org) -- Part of the InfraCraft homelab stack.
+Built by [Florian](https://github.com/nash87).
