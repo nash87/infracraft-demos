@@ -2,7 +2,7 @@
 
 Live interactive demos of [ParkHub](https://github.com/nash87/parkhub-rust) -- a self-hosted parking management system available in two editions.
 
-**Demo site:** [infracraft-demos.onrender.com](https://infracraft-demos.onrender.com)
+**Demo site:** [nash87.github.io/infracraft-demos](https://nash87.github.io/infracraft-demos)
 **Portfolio:** [infracraft.duckdns.org](https://infracraft.duckdns.org)
 
 ---
@@ -50,7 +50,7 @@ Data resets every 30 minutes automatically -- or use the "Reset Demo Now" button
 ## Architecture
 
 ### Demo Hosting
-- **Landing page**: [Render.com](https://render.com) static site (this repo, static HTML -- zero build step)
+- **Landing page**: [GitHub Pages](https://nash87.github.io/infracraft-demos) (this repo, static HTML -- zero build step)
 - **Demo instances**: [Render.com](https://render.com) free-tier Docker containers
 
 ### Reset Mechanism
